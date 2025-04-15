@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mindquest", "mindquest.csproj", "{B5A06B5E-F771-476F-9B36-992D2614841E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C0DFBEBE-479B-4AA1-A6D9-88B5ACF7D593}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5A06B5E-F771-476F-9B36-992D2614841E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5A06B5E-F771-476F-9B36-992D2614841E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5A06B5E-F771-476F-9B36-992D2614841E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5A06B5E-F771-476F-9B36-992D2614841E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EB9E9A99-0F5F-4170-BB6C-B7C65A279D3C}
+	EndGlobalSection
+EndGlobal
