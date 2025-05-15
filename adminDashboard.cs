@@ -59,5 +59,10 @@ namespace MindQuest
             LoadControl(new ManageAchievementsControl());
         }
 
+        private void btnManageUsers_Click(object sender, EventArgs e)
+        {
+            LoadControl(new UserListControl());
+        }
+
     }
 }

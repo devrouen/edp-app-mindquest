@@ -11,10 +11,9 @@
         private System.Windows.Forms.Button btnManageAchievements;
         private System.Windows.Forms.Button btnViewAttempts;
         private System.Windows.Forms.Button btnViewLogs;
+        private System.Windows.Forms.Button btnManageUsers;
         private System.Windows.Forms.Button btnLogout;
         private System.Windows.Forms.Label lblWelcome;
-
-
 
         protected override void Dispose(bool disposing)
         {
@@ -33,6 +32,7 @@
             this.btnManageQuizzes = new System.Windows.Forms.Button();
             this.lblWelcome = new System.Windows.Forms.Label();
             this.btnManageAchievements = new System.Windows.Forms.Button();
+            this.btnManageUsers = new System.Windows.Forms.Button();
             this.panelMainContent = new System.Windows.Forms.Panel();
             this.panelSidebar.SuspendLayout();
             this.SuspendLayout();
@@ -47,6 +47,7 @@
             this.panelSidebar.Controls.Add(this.btnManageQuizzes);
             this.panelSidebar.Controls.Add(this.lblWelcome);
             this.panelSidebar.Controls.Add(this.btnManageAchievements);
+            this.panelSidebar.Controls.Add(this.btnManageUsers);
             this.panelSidebar.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelSidebar.Location = new System.Drawing.Point(0, 0);
             this.panelSidebar.Margin = new System.Windows.Forms.Padding(4);
@@ -143,6 +144,19 @@
             this.btnManageAchievements.Text = "Manage Achievements";
             this.btnManageAchievements.UseVisualStyleBackColor = true;
             this.btnManageAchievements.Click += new System.EventHandler(this.btnManageAchievements_Click);
+            // 
+            // btnManageUsers
+            // 
+            this.btnManageUsers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnManageUsers.ForeColor = System.Drawing.Color.White;
+            this.btnManageUsers.Location = new System.Drawing.Point(15, 380);
+            this.btnManageUsers.Margin = new System.Windows.Forms.Padding(4);
+            this.btnManageUsers.Name = "btnManageUsers";
+            this.btnManageUsers.Size = new System.Drawing.Size(225, 47);
+            this.btnManageUsers.TabIndex = 6;
+            this.btnManageUsers.Text = "Manage Users";
+            this.btnManageUsers.UseVisualStyleBackColor = true;
+            this.btnManageUsers.Click += new System.EventHandler(this.btnManageUsers_Click);
             // 
             // panelMainContent
             // 

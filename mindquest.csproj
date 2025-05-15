@@ -108,6 +108,36 @@
     <Compile Include="adminDashboard.Designer.cs">
       <DependentUpon>adminDashboard.cs</DependentUpon>
     </Compile>
+    <Compile Include="addQuizForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="addQuizForm.Designer.cs">
+      <DependentUpon>addQuizForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="editQuizForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="editQuizForm.Designer.cs">
+      <DependentUpon>editQuizForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CategoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CategoryForm.Designer.cs">
+      <DependentUpon>CategoryForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AssignAchievementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AssignAchievementForm.Designer.cs">
+      <DependentUpon>AssignAchievementForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="passwordRecoveryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="passwordRecoveryForm.Designer.cs">
+      <DependentUpon>passwordRecoveryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="QuizForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,6 +180,12 @@
     <Compile Include="AdminLogsControl.Designer.cs">
       <DependentUpon>AdminLogsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserListControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserListControl.Designer.cs">
+      <DependentUpon>UserListControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ViewAttemptsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -166,6 +202,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="adminDashboard.resx">
       <DependentUpon>adminDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="addQuizForm.resx">
+      <DependentUpon>addQuizForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="editQuizForm.resx">
+      <DependentUpon>editQuizForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageAchievementsControl.resx">
+      <DependentUpon>ManageAchievementsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="passwordRecoveryForm.resx">
+      <DependentUpon>passwordRecoveryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="loginForm.resx">
       <DependentUpon>loginForm.cs</DependentUpon>
@@ -191,6 +239,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UserListControl.resx">
+      <DependentUpon>UserListControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewAttemptsControl.resx">
+      <DependentUpon>ViewAttemptsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -204,6 +258,35 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>9</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

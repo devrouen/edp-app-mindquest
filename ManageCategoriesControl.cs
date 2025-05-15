@@ -11,8 +11,10 @@ namespace MindQuest
         public ManageCategoriesControl()
         {
             InitializeComponent();
+            dgvCategories.DataBindingComplete += dgvCategories_DataBindingComplete;
             LoadCategories();
         }
+
 
         private void LoadCategories()
         {
@@ -21,87 +23,101 @@ namespace MindQuest
                 using (MySqlConnection conn = DBHelper.GetConnection())
                 {
                     conn.Open();
-                    string query = "SELECT * FROM categories";
+                    string query = "SELECT category_id, category_name, " +
+                                  "(SELECT COUNT(*) FROM quizzes WHERE quizzes.category_id = categories.category_id) AS quiz_count " +
+                                  "FROM categories ORDER BY category_name";
+
                     MySqlDataAdapter adapter = new MySqlDataAdapter(query, conn);
                     DataTable dt = new DataTable();
                     adapter.Fill(dt);
+
+                    dgvCategories.AutoGenerateColumns = true;
                     dgvCategories.DataSource = dt;
-                    dgvCategories.Columns["category_id"].Visible = false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error loading categories: " + ex.Message);
+                MessageBox.Show("Error loading categories: " + ex.Message, "Database Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        private void dgvCategories_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
-            string name = txtCategoryName.Text.Trim();
-            if (string.IsNullOrWhiteSpace(name))
+            // Safe to modify columns here
+            if (dgvCategories.Columns.Contains("category_id"))
+                dgvCategories.Columns["category_id"].Visible = false;
+
+            if (dgvCategories.Columns.Contains("category_name"))
             {
-                MessageBox.Show("Category name cannot be empty.");
-                return;
+                dgvCategories.Columns["category_name"].HeaderText = "Category Name";
+                dgvCategories.Columns["category_name"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
 
-            try
+            if (dgvCategories.Columns.Contains("quiz_count"))
             {
-                using (MySqlConnection conn = DBHelper.GetConnection())
-                {
-                    conn.Open();
-                    string query = "INSERT INTO categories (category_name) VALUES (@name)";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@name", name);
-                    cmd.ExecuteNonQuery();
-                    LoadCategories();
-                    txtCategoryName.Clear();
-                }
+                dgvCategories.Columns["quiz_count"].HeaderText = "Number of Quizzes";
+                dgvCategories.Columns["quiz_count"].Width = 150;
             }
-            catch (Exception ex)
+        }
+
+
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            using (CategoryForm form = new CategoryForm())
             {
-                MessageBox.Show("Error adding category: " + ex.Message);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    LoadCategories();
+                }
             }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dgvCategories.SelectedRows.Count == 0) return;
-
-            int id = Convert.ToInt32(dgvCategories.SelectedRows[0].Cells["category_id"].Value);
-            string name = txtCategoryName.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(name))
+            if (dgvCategories.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Category name cannot be empty.");
+                MessageBox.Show("Please select a category to edit.", "No Selection",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            try
+            int categoryId = Convert.ToInt32(dgvCategories.SelectedRows[0].Cells["category_id"].Value);
+            string categoryName = dgvCategories.SelectedRows[0].Cells["category_name"].Value.ToString();
+
+            using (CategoryForm form = new CategoryForm(categoryId, categoryName))
             {
-                using (MySqlConnection conn = DBHelper.GetConnection())
+                if (form.ShowDialog() == DialogResult.OK)
                 {
-                    conn.Open();
-                    string query = "UPDATE categories SET name = @name WHERE category_id = @id";
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@name", name);
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
                     LoadCategories();
-                    txtCategoryName.Clear();
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error editing category: " + ex.Message);
             }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (dgvCategories.SelectedRows.Count == 0) return;
+            if (dgvCategories.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a category to delete.", "No Selection",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
-            int id = Convert.ToInt32(dgvCategories.SelectedRows[0].Cells["category_id"].Value);
-            if (MessageBox.Show("Are you sure you want to delete this category?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            int categoryId = Convert.ToInt32(dgvCategories.SelectedRows[0].Cells["category_id"].Value);
+            string categoryName = dgvCategories.SelectedRows[0].Cells["category_name"].Value.ToString();
+            int quizCount = Convert.ToInt32(dgvCategories.SelectedRows[0].Cells["quiz_count"].Value);
+
+            if (quizCount > 0)
+            {
+                MessageBox.Show($"Cannot delete category '{categoryName}' because it contains {quizCount} quiz(es).\n\n" +
+                                "Please reassign or delete the quizzes first.",
+                                "Cannot Delete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (MessageBox.Show($"Are you sure you want to delete the category '{categoryName}'?",
+                               "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 try
                 {
@@ -110,25 +126,23 @@ namespace MindQuest
                         conn.Open();
                         string query = "DELETE FROM categories WHERE category_id = @id";
                         MySqlCommand cmd = new MySqlCommand(query, conn);
-                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Parameters.AddWithValue("@id", categoryId);
                         cmd.ExecuteNonQuery();
+
                         LoadCategories();
-                        txtCategoryName.Clear();
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error deleting category: " + ex.Message);
+                    MessageBox.Show("Error deleting category: " + ex.Message, "Database Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        private void dgvCategories_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void btnRefresh_Click(object sender, EventArgs e)
         {
-            if (e.RowIndex >= 0)
-            {
-                txtCategoryName.Text = dgvCategories.Rows[e.RowIndex].Cells["category_name"].Value.ToString();
-            }
+            LoadCategories();
         }
     }
 }

@@ -102,7 +102,7 @@ namespace mindquest
                 MessageBox.Show("Error fetching user role: " + ex.Message);
                 return string.Empty;
             }
-        }   
+        }
 
         private void lnkSignup_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -111,5 +111,13 @@ namespace mindquest
             signup.Show();
             this.Hide();
         }
+
+        private void lnkForgotPassword_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            passwordRecoveryForm recoveryForm = new passwordRecoveryForm();
+            recoveryForm.Show();
+            this.Hide();
+        }
+
     }
 }

@@ -1,7 +1,9 @@
-﻿using System;
+﻿// QuizForm.cs
+using System;
 using System.Data;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 using mindquest;
 
 namespace MindQuest
@@ -10,21 +12,20 @@ namespace MindQuest
     {
         private int quizId = -1;
         private bool isEditMode = false;
-        private string adminUsername; // Store the passed admin username
+        private string adminUsername;
+        private List<QuestionItem> questions = new List<QuestionItem>();
 
-        // Constructor for creating a new quiz (with username)
         public QuizForm(string username)
         {
             InitializeComponent();
-            this.adminUsername = username; // Store the username
+            this.adminUsername = username;
         }
 
-        // Constructor for editing an existing quiz (with existing quiz data)
         public QuizForm(int quizId, string title, string description, int categoryId, string username)
         {
             InitializeComponent();
             this.quizId = quizId;
-            this.adminUsername = username; // Store the username
+            this.adminUsername = username;
             txtTitle.Text = title;
             txtDescription.Text = description;
             isEditMode = true;
@@ -91,30 +92,40 @@ namespace MindQuest
 
             try
             {
-                // Get the user_id of the admin based on username
                 int userId = GetUserIdFromUsername(adminUsername);
 
                 using (MySqlConnection conn = DBHelper.GetConnection())
                 {
                     conn.Open();
-                    string query = isEditMode
-                        ? "UPDATE quizzes SET title = @title, description = @desc, category_id = @cat WHERE quiz_id = @id"
-                        : "INSERT INTO quizzes (title, description, category_id, user_id) VALUES (@title, @desc, @cat, @user_id)";
-
-                    MySqlCommand cmd = new MySqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@title", title);
-                    cmd.Parameters.AddWithValue("@desc", description);
-                    cmd.Parameters.AddWithValue("@cat", categoryId);
-                    cmd.Parameters.AddWithValue("@user_id", userId); // Pass the user_id here
 
                     if (isEditMode)
+                    {
+                        string updateQuery = "UPDATE quizzes SET title = @title, description = @desc, category_id = @cat WHERE quiz_id = @id";
+                        MySqlCommand cmd = new MySqlCommand(updateQuery, conn);
+                        cmd.Parameters.AddWithValue("@title", title);
+                        cmd.Parameters.AddWithValue("@desc", description);
+                        cmd.Parameters.AddWithValue("@cat", categoryId);
                         cmd.Parameters.AddWithValue("@id", quizId);
+                        cmd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        string insertQuery = "INSERT INTO quizzes (title, description, category_id, user_id) VALUES (@title, @desc, @cat, @user_id)";
+                        MySqlCommand cmd = new MySqlCommand(insertQuery, conn);
+                        cmd.Parameters.AddWithValue("@title", title);
+                        cmd.Parameters.AddWithValue("@desc", description);
+                        cmd.Parameters.AddWithValue("@cat", categoryId);
+                        cmd.Parameters.AddWithValue("@user_id", userId);
+                        cmd.ExecuteNonQuery();
+                        quizId = (int)cmd.LastInsertedId;
+                    }
 
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show(isEditMode ? "Quiz updated!" : "Quiz added!");
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
+                    SaveQuestionsAndAnswers(conn);
                 }
+
+                MessageBox.Show(isEditMode ? "Quiz updated!" : "Quiz added!");
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             catch (Exception ex)
             {
@@ -122,12 +133,32 @@ namespace MindQuest
             }
         }
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void SaveQuestionsAndAnswers(MySqlConnection conn)
         {
-            this.Close();
+            foreach (var q in questions)
+            {
+                string questionQuery = "INSERT INTO questions (quiz_id, question_type, question_text, points) VALUES (@quizId, @type, @text, @points)";
+                MySqlCommand cmd = new MySqlCommand(questionQuery, conn);
+                cmd.Parameters.AddWithValue("@quizId", quizId);
+                cmd.Parameters.AddWithValue("@type", q.QuestionType);
+                cmd.Parameters.AddWithValue("@text", q.QuestionText);
+                cmd.Parameters.AddWithValue("@points", q.Points);
+                cmd.ExecuteNonQuery();
+
+                int questionId = (int)cmd.LastInsertedId;
+
+                foreach (var a in q.Answers)
+                {
+                    string answerQuery = "INSERT INTO answers (question_id, answer_text, is_correct) VALUES (@qid, @text, @correct)";
+                    MySqlCommand aCmd = new MySqlCommand(answerQuery, conn);
+                    aCmd.Parameters.AddWithValue("@qid", questionId);
+                    aCmd.Parameters.AddWithValue("@text", a.AnswerText);
+                    aCmd.Parameters.AddWithValue("@correct", a.IsCorrect);
+                    aCmd.ExecuteNonQuery();
+                }
+            }
         }
 
-        // Helper method to get user_id from username
         private int GetUserIdFromUsername(string username)
         {
             int userId = 0;
@@ -145,5 +176,19 @@ namespace MindQuest
             }
             return userId;
         }
+    }
+
+    public class QuestionItem
+    {
+        public string QuestionText { get; set; }
+        public string QuestionType { get; set; }
+        public int Points { get; set; }
+        public List<AnswerItem> Answers { get; set; } = new List<AnswerItem>();
+    }
+
+    public class AnswerItem
+    {
+        public string AnswerText { get; set; }
+        public bool IsCorrect { get; set; }
     }
 }

@@ -60,7 +60,7 @@ namespace MindQuest
 
         private void btnAddQuiz_Click(object sender, EventArgs e)
         {
-            QuizForm quizForm = new QuizForm(adminUsername); // Pass the username to the QuizForm
+            addQuizForm quizForm = new addQuizForm(adminUsername); // Pass the username to the QuizForm
             if (quizForm.ShowDialog() == DialogResult.OK)
                 LoadQuizzes();
         }
@@ -71,13 +71,14 @@ namespace MindQuest
             if (dgvQuizzes.SelectedRows.Count > 0)
             {
                 int quizId = Convert.ToInt32(dgvQuizzes.SelectedRows[0].Cells["Quiz ID"].Value);
-                string title = dgvQuizzes.SelectedRows[0].Cells["Title"].Value.ToString();
-                string description = dgvQuizzes.SelectedRows[0].Cells["Description"].Value.ToString();
-                int categoryId = Convert.ToInt32(dgvQuizzes.SelectedRows[0].Cells["category_id"].Value);
 
-                QuizForm quizForm = new QuizForm(quizId, title, description, categoryId, adminUsername);
-                if (quizForm.ShowDialog() == DialogResult.OK)
+                // Create and show the new editQuizForm
+                editQuizForm editForm = new editQuizForm(adminUsername, quizId);
+                if (editForm.ShowDialog() == DialogResult.OK)
+                {
+                    // Reload quizzes to reflect changes
                     LoadQuizzes();
+                }
             }
             else
             {

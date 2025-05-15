@@ -1,4 +1,7 @@
-﻿namespace MindQuest
+﻿using System.Windows.Forms;
+using System;
+
+namespace MindQuest
 {
     partial class QuizForm
     {
@@ -35,72 +38,99 @@
 
         private void InitializeComponent()
         {
-            this.txtTitle = new System.Windows.Forms.TextBox();
-            this.txtDescription = new System.Windows.Forms.TextBox();
-            this.cmbCategory = new System.Windows.Forms.ComboBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.lblTitle = new System.Windows.Forms.Label();
-            this.lblDescription = new System.Windows.Forms.Label();
-            this.lblCategory = new System.Windows.Forms.Label();
+            this.txtTitle = new TextBox();
+            this.txtDescription = new TextBox();
+            this.cmbCategory = new ComboBox();
+            this.btnSave = new Button();
+            this.btnCancel = new Button();
+            this.lblTitle = new Label();
+            this.lblDescription = new Label();
+            this.lblCategory = new Label();
+            this.txtQuestionText = new TextBox();
+            this.cmbQuestionType = new ComboBox();
+            this.numPoints = new NumericUpDown();
+            this.dgvAnswers = new DataGridView();
+            this.btnAddAnswer = new Button();
+            this.btnRemoveAnswer = new Button();
+            this.lblQuestionText = new Label();
+            this.lblQuestionType = new Label();
+            this.lblPoints = new Label();
+            this.lblAnswers = new Label();
 
+            ((System.ComponentModel.ISupportInitialize)(this.numPoints)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAnswers)).BeginInit();
             this.SuspendLayout();
 
-            // lblTitle
-            this.lblTitle.Text = "Title:";
-            this.lblTitle.Location = new System.Drawing.Point(30, 30);
+            // Labels
+            lblTitle.Text = "Title:";
+            lblTitle.Location = new System.Drawing.Point(30, 20);
+            lblDescription.Text = "Description:";
+            lblDescription.Location = new System.Drawing.Point(30, 60);
+            lblCategory.Text = "Category:";
+            lblCategory.Location = new System.Drawing.Point(30, 110);
 
-            // txtTitle
-            this.txtTitle.Location = new System.Drawing.Point(150, 30);
-            this.txtTitle.Width = 200;
+            // Text Inputs
+            txtTitle.Location = new System.Drawing.Point(150, 20);
+            txtDescription.Location = new System.Drawing.Point(150, 60);
+            txtDescription.Multiline = true;
+            txtDescription.Height = 40;
+            cmbCategory.Location = new System.Drawing.Point(150, 110);
+            cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            // lblDescription
-            this.lblDescription.Text = "Description:";
-            this.lblDescription.Location = new System.Drawing.Point(30, 70);
+            // Question Section
+            lblQuestionText.Text = "Question Text:";
+            lblQuestionText.Location = new System.Drawing.Point(30, 160);
+            txtQuestionText.Location = new System.Drawing.Point(150, 160);
+            txtQuestionText.Width = 400;
 
-            // txtDescription
-            this.txtDescription.Location = new System.Drawing.Point(150, 70);
-            this.txtDescription.Width = 200;
-            this.txtDescription.Height = 60;
-            this.txtDescription.Multiline = true;
+            lblQuestionType.Text = "Question Type:";
+            lblQuestionType.Location = new System.Drawing.Point(30, 200);
+            cmbQuestionType.Location = new System.Drawing.Point(150, 200);
+            cmbQuestionType.Items.AddRange(new string[] { "multiple_choice", "true_false", "identification", "multiple_answers" });
 
-            // lblCategory
-            this.lblCategory.Text = "Category:";
-            this.lblCategory.Location = new System.Drawing.Point(30, 150);
+            lblPoints.Text = "Points:";
+            lblPoints.Location = new System.Drawing.Point(30, 240);
+            numPoints.Location = new System.Drawing.Point(150, 240);
 
-            // cmbCategory
-            this.cmbCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbCategory.Location = new System.Drawing.Point(150, 150);
-            this.cmbCategory.Width = 200;
+            lblAnswers.Text = "Answers:";
+            lblAnswers.Location = new System.Drawing.Point(30, 280);
+            dgvAnswers.Location = new System.Drawing.Point(150, 280);
+            dgvAnswers.Size = new System.Drawing.Size(400, 120);
+            dgvAnswers.Columns.Add("AnswerText", "Answer Text");
+            dgvAnswers.Columns.Add(new DataGridViewCheckBoxColumn() { Name = "IsCorrect", HeaderText = "Correct" });
 
-            // btnSave
-            this.btnSave.Text = "Save";
-            this.btnSave.Location = new System.Drawing.Point(150, 200);
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            btnAddAnswer.Text = "Add Answer";
+            btnAddAnswer.Location = new System.Drawing.Point(150, 410);
+            //btnAddAnswer.Click += new EventHandler(btnAddAnswer_Click);
 
-            // btnCancel
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.Location = new System.Drawing.Point(250, 200);
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            btnRemoveAnswer.Text = "Remove Answer";
+            btnRemoveAnswer.Location = new System.Drawing.Point(250, 410);
+            //btnRemoveAnswer.Click += new EventHandler(btnRemoveAnswer_Click);
 
-            // QuizForm
-            this.ClientSize = new System.Drawing.Size(400, 270);
-            this.Controls.Add(this.lblTitle);
-            this.Controls.Add(this.txtTitle);
-            this.Controls.Add(this.lblDescription);
-            this.Controls.Add(this.txtDescription);
-            this.Controls.Add(this.lblCategory);
-            this.Controls.Add(this.cmbCategory);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.btnCancel);
-            this.Text = "Quiz Details";
-            this.Load += new System.EventHandler(this.QuizForm_Load);
+            // Buttons
+            btnSave.Text = "Save";
+            btnSave.Location = new System.Drawing.Point(150, 460);
+            btnSave.Click += new EventHandler(btnSave_Click);
+
+            btnCancel.Text = "Cancel";
+            btnCancel.Location = new System.Drawing.Point(250, 460);
+            //btnCancel.Click += new EventHandler(btnCancel_Click);
+
+            // Form setup
+            this.Text = "Quiz Editor";
+            this.ClientSize = new System.Drawing.Size(600, 520);
+            this.Controls.AddRange(new Control[] {
+        lblTitle, txtTitle, lblDescription, txtDescription, lblCategory, cmbCategory,
+        lblQuestionText, txtQuestionText, lblQuestionType, cmbQuestionType,
+        lblPoints, numPoints, lblAnswers, dgvAnswers, btnAddAnswer, btnRemoveAnswer,
+        btnSave, btnCancel
+    });
+
+            ((System.ComponentModel.ISupportInitialize)(this.numPoints)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAnswers)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
-
-
-
         }
+
     }
 }
